@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thank You — FormSubmit</title>
+  {% load static %}
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0d0d0f;
+      --surface: #131316;
+      --border:  #252529;
+      --text:    #e8e8f0;
+      --sub:     #7a7a8c;
+      --accent:  #c8f064;
+      --mono:    'DM Mono', monospace;
+      --serif:   'DM Serif Display', serif;
+      --sans:    'DM Sans', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Background glow */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 50% 50% at 50% 50%, rgba(200,240,100,.08) 0%, transparent 70%);
+      pointer-events: none;
+      animation: glowPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: .5; }
+    }
+
+    /* Card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 4rem 3.5rem;
+      max-width: 540px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+      animation: slideUp .6s cubic-bezier(.16,1,.3,1) both;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Checkmark */
+    .check-ring {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2rem;
+      box-shadow: 0 0 32px rgba(200,240,100,.2), inset 0 0 16px rgba(200,240,100,.05);
+      animation: ringIn .7s .2s cubic-bezier(.16,1,.3,1) both;
+    }
+
+    @keyframes ringIn {
+      from { opacity: 0; transform: scale(.6) rotate(-30deg); }
+      to   { opacity: 1; transform: scale(1) rotate(0); }
+    }
+
+    .check-icon {
+      width: 28px;
+      height: 28px;
+      stroke: var(--accent);
+      stroke-width: 2.5;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* Animated check path */
+    .check-path {
+      stroke-dasharray: 40;
+      stroke-dashoffset: 40;
+      animation: drawCheck .4s .6s ease forwards;
+    }
+
+    @keyframes drawCheck {
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* Label */
+    .tag {
+      font-family: var(--mono);
+      font-size: .72rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: 2.4rem;
+      font-weight: 400;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    p {
+      color: var(--sub);
+      font-size: .95rem;
+      line-height: 1.75;
+      margin-bottom: 2rem;
+    }
+
+    /* Info pills */
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+      justify-content: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .pill {
+      background: rgba(200,240,100,.07);
+      border: 1px solid rgba(200,240,100,.2);
+      border-radius: 100px;
+      font-family: var(--mono);
+      font-size: .7rem;
+      color: var(--accent);
+      padding: .3rem .9rem;
+      letter-spacing: .06em;
+    }
+
+    /* Button */
+    .btn-back {
+      display: inline-block;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--sub);
+      font-family: var(--mono);
+      font-size: .78rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: .75rem 2rem;
+      transition: border-color .2s, color .2s;
+    }
+
+    .btn-back:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Corner decoration */
+    .corner {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+    }
+    .corner.tl { top: -1px; left: -1px; border-top: 2px solid var(--accent); border-left: 2px solid var(--accent); border-radius: 12px 0 0 0; }
+    .corner.tr { top: -1px; right: -1px; border-top: 2px solid var(--accent); border-right: 2px solid var(--accent); border-radius: 0 12px 0 0; }
+    .corner.bl { bottom: -1px; left: -1px; border-bottom: 2px solid var(--accent); border-left: 2px solid var(--accent); border-radius: 0 0 0 12px; }
+    .corner.br { bottom: -1px; right: -1px; border-bottom: 2px solid var(--accent); border-right: 2px solid var(--accent); border-radius: 0 0 12px 0; }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <span class="corner tl"></span>
+    <span class="corner tr"></span>
+    <span class="corner bl"></span>
+    <span class="corner br"></span>
+
+    <div class="check-ring">
+      <svg class="check-icon" viewBox="0 0 24 24">
+        <polyline class="check-path" points="4,13 9,18 20,7" />
+      </svg>
+    </div>
+
+    <p class="tag">// submission received</p>
+    <h1>Message<br><em>delivered.</em></h1>
+    <p>
+      Your message has been received and logged. An auto-reply has been
+      sent to your inbox. We'll follow up soon.
+    </p>
+
+    <div class="pills">
+      <span class="pill">✓ Email sent</span>
+      <span class="pill">✓ Auto-reply delivered</span>
+      <span class="pill">✓ Logged to database</span>
+      <span class="pill">✓ Webhook triggered</span>
+    </div>
+
+    <a href="{% url 'contact_form' %}" class="btn-back">← Send another message</a>
+  </div>
+</body>
+</html>

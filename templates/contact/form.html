@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FormSubmit Demo</title>
+  {% load static %}
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f5f5;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      padding: 3rem;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .form-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .form-header h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 0.5rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field input,
+    .field textarea {
+      padding: 0.875rem 1rem;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      color: #1a1a1a;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .field input::placeholder,
+    .field textarea::placeholder {
+      color: #999;
+    }
+
+    .field input:focus,
+    .field textarea:focus {
+      border-color: #333;
+      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .field textarea {
+      resize: vertical;
+      min-height: 200px;
+    }
+
+    .field input {
+      height: auto;
+    }
+
+    .btn-submit {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-submit:hover {
+      background: #1a1a1a;
+      transform: translateY(-2px);
+    }
+
+    .btn-submit:active {
+      transform: translateY(0);
+    }
+
+    .error-banner {
+      background: #fee;
+      border: 1px solid #fcc;
+      color: #c33;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+    }
+
+    /* Honeypot — hide from real users */
+    .hp-field {
+      position: absolute;
+      left: -9999px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 2rem 1.5rem;
+      }
+
+      .form-header h1 {
+        font-size: 2rem;
+      }
+
+      .field-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="form-header">
+      <h1>FormSubmit Demo</h1>
+    </div>
+
+    {% if error %}
+    <div class="error-banner">⚠ {{ error }}</div>
+    {% endif %}
+
+    <form action="{% url 'submit_form' %}" method="POST" id="contactForm">
+      {% csrf_token %}
+
+      <!-- ── Honeypot (invisible to humans) ── -->
+      <div class="hp-field" aria-hidden="true">
+        <input type="text" name="_honey" id="_honey" tabindex="-1" autocomplete="off" value="" />
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Full Name"
+            value="{{ name|default:'' }}"
+            required
+            autocomplete="name"
+          />
+        </div>
+        <div class="field">
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Email Address"
+            value="{{ email|default:'' }}"
+            required
+            autocomplete="email"
+          />
+        </div>
+      </div>
+
+      <div class="field full">
+        <textarea
+          id="message"
+          name="message"
+          placeholder="Your Message"
+          required
+        >{{ message|default:'' }}</textarea>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">
+        Submit Form
+      </button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('contactForm').addEventListener('submit', function () {
+      const btn = document.getElementById('submitBtn');
+      btn.textContent = 'Sending…';
+      btn.disabled = true;
+    });
+  </script>
+
+</body>
+</html>
